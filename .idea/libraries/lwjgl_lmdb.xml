@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="lwjgl-lmdb">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-lmdb/lwjgl-lmdb-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-lmdb/lwjgl-lmdb.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-lmdb/lwjgl-lmdb-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-lmdb/lwjgl-lmdb-natives-macos.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-lmdb/lwjgl-lmdb-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-lmdb/lwjgl-lmdb-natives-linux.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

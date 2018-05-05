@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="lwjgl-par1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-par/lwjgl-par-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-par/lwjgl-par.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-par/lwjgl-par-natives-macos.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-par/lwjgl-par-natives-linux.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-par/lwjgl-par-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-par/lwjgl-par-javadoc.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

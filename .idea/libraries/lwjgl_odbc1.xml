@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lwjgl-odbc1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-3.1.6/lwjgl-odbc/lwjgl-odbc-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-3.1.6/lwjgl-odbc/lwjgl-odbc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lwjgl-3.1.6/lwjgl-odbc/lwjgl-odbc-javadoc.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

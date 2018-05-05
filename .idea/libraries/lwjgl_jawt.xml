@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lwjgl-jawt">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-jawt/lwjgl-jawt-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-jawt/lwjgl-jawt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/production/3D-Graphics-with-OpenGL/lwjgl-3.1.6/lwjgl-jawt/lwjgl-jawt-javadoc.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
