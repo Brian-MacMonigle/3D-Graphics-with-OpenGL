@@ -4,6 +4,7 @@ import engine.GameItem;
 import engine.Utils;
 import engine.Window;
 import engine.graph.Camera;
+import engine.graph.Mesh;
 import engine.graph.ShaderProgram;
 import engine.graph.Transformation;
 import org.joml.Matrix4f;
@@ -40,6 +41,9 @@ public class Renderer {
         shaderProgram.createUniform("projectionMatrix");
         shaderProgram.createUniform("modelViewMatrix");
         shaderProgram.createUniform("texture_sampler");
+        // Create uniform for default colour and the flag that controls it
+        shaderProgram.createUniform("colour");
+        shaderProgram.createUniform("useColour");
     }
     
     public void clear() {
@@ -49,7 +53,7 @@ public class Renderer {
     public void render(Window window, Camera camera, GameItem[] gameItems) {
         clear();
         
-        if(window.isResized()) {
+        if ( window.isResized() ) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
@@ -57,8 +61,7 @@ public class Renderer {
         shaderProgram.bind();
         
         // Update projection Matrix
-        Matrix4f projectionMatrix = transformation
-                .getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
         
         // Update view Matrix
@@ -67,18 +70,21 @@ public class Renderer {
         shaderProgram.setUniform("texture_sampler", 0);
         // Render each gameItem
         for(GameItem gameItem : gameItems) {
+            Mesh mesh = gameItem.getMesh();
             // Set model view matrix for this item
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            // Render the mes for this game item
-            gameItem.getMesh().render();
+            // Render the mesh for this game item
+            shaderProgram.setUniform("colour", mesh.getColour());
+            shaderProgram.setUniform("useColour", mesh.isTextured() ? 0 : 1);
+            mesh.render();
         }
         
         shaderProgram.unbind();
     }
     
     public void cleanup() {
-        if(shaderProgram != null) {
+        if (shaderProgram != null) {
             shaderProgram.cleanup();
         }
     }
