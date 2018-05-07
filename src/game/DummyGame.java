@@ -39,11 +39,12 @@ public class DummyGame implements IGameLogic {
         renderer.init(window);
     
         
-        //Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
-         Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
+        Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
+        //Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
         Texture texture = new Texture("/textures/grassblock.png");
-        mesh.setTexture(texture);
+        //mesh.setTexture(texture);
         GameItem gameItem = new GameItem(mesh);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         gameItem.setScale(0.5f);
         gameItem.setPosition(0, 0, -2);
         gameItems = new GameItem[]{gameItem};
