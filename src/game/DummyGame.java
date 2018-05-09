@@ -4,15 +4,11 @@ import engine.GameItem;
 import engine.IGameLogic;
 import engine.MouseInput;
 import engine.Window;
-import engine.graph.Camera;
-import engine.graph.Mesh;
-import engine.graph.OBJLoader;
-import engine.graph.Texture;
+import engine.graph.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 
 public class DummyGame implements IGameLogic {
     
@@ -26,29 +22,43 @@ public class DummyGame implements IGameLogic {
     
     private GameItem[] gameItems;
     
+    private Vector3f ambientLight;
+    
+    private PointLight pointLight;
+    
     private static final float CAMERA_POS_STEP = 0.05f;
     
     public DummyGame() {
         renderer = new Renderer();
         camera = new Camera();
-        cameraInc = new Vector3f(0, 0, 0);
+        cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
     }
     
     @Override
     public void init(Window window) throws Exception {
         renderer.init(window);
-    
         
-        Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
-        //Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
+        float reflectance = 1f;
+        //Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
+        Material material = new Material(new Vector3f(0.2f, 0.5f, 0.5f), reflectance);
+        
+        Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
         Texture texture = new Texture("/textures/grassblock.png");
-        //mesh.setTexture(texture);
+        // Material material = new Material(texture, reflectance);
+        
+        mesh.setMaterial(material);
         GameItem gameItem = new GameItem(mesh);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         gameItem.setScale(0.5f);
         gameItem.setPosition(0, 0, -2);
-        gameItems = new GameItem[]{gameItem};
-    
+        gameItems = new GameItem[] {gameItem};
+        
+        ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+        Vector3f lightColour = new Vector3f(1, 1, 1);
+        Vector3f lightPosition = new Vector3f(0, 0, 1);
+        float lightIntensity = 1.0f;
+        pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
+        PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+        pointLight.setAttenuation(att);
     }
     
     @Override
@@ -69,6 +79,12 @@ public class DummyGame implements IGameLogic {
         } else if(window.isKeyPressed(GLFW_KEY_X)) {
             cameraInc.y = 1;
         }
+        float lightPos = pointLight.getPosition().z;
+        if(window.isKeyPressed(GLFW_KEY_N)) {
+            this.pointLight.getPosition().z = lightPos + 0.1f;
+        } else if(window.isKeyPressed(GLFW_KEY_M)) {
+            this.pointLight.getPosition().z = lightPos - 0.1f;
+        }
     }
     
     @Override
@@ -86,7 +102,7 @@ public class DummyGame implements IGameLogic {
     
     @Override
     public void render(Window window) {
-        renderer.render(window, camera, gameItems);
+        renderer.render(window, camera, gameItems, ambientLight, pointLight);
     }
     
     @Override

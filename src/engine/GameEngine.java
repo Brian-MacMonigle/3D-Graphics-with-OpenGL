@@ -26,7 +26,7 @@ public class GameEngine implements Runnable {
     
     public void start() {
         String osName = System.getProperty("os.name");
-        if ( osName.contains("Mac") ) {
+        if(osName.contains("Mac")) {
             gameLoopThread.run();
         } else {
             gameLoopThread.start();
@@ -38,7 +38,7 @@ public class GameEngine implements Runnable {
         try {
             init();
             gameLoop();
-        } catch (Exception excp) {
+        } catch(Exception excp) {
             excp.printStackTrace();
         } finally {
             cleanup();
@@ -58,20 +58,20 @@ public class GameEngine implements Runnable {
         float interval = 1f / TARGET_UPS;
         
         boolean running = true;
-        while (running && !window.windowShouldClose()) {
+        while(running && !window.windowShouldClose()) {
             elapsedTime = timer.getElapsedTime();
             accumulator += elapsedTime;
             
             input();
             
-            while (accumulator >= interval) {
+            while(accumulator >= interval) {
                 update(interval);
                 accumulator -= interval;
             }
             
             render();
             
-            if ( !window.isvSync() ) {
+            if(!window.isvSync()) {
                 sync();
             }
         }
@@ -84,10 +84,10 @@ public class GameEngine implements Runnable {
     private void sync() {
         float loopSlot = 1f / TARGET_FPS;
         double endTime = timer.getLastLoopTime() + loopSlot;
-        while (timer.getTime() < endTime) {
+        while(timer.getTime() < endTime) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException ie) {
+            } catch(InterruptedException ie) {
             }
         }
     }
