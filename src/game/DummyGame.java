@@ -7,6 +7,7 @@ import engine.Window;
 import engine.graph.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -40,10 +41,11 @@ public class DummyGame implements IGameLogic {
         renderer.init(window);
         
         float reflectance = 1f;
-         Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
-         Material material = new Material(new Vector3f(0.2f, 0.5f, 0.5f), reflectance);
+        //Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
+        Material material = new Material(new Vector4f(1.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 1.0f, 0.0f),
+                                         new Vector4f(0.0f, 1.0f, 0.0f, 0.0f), null, reflectance);
         
-        //Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
+        Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
         // Texture texture = new Texture("/textures/grassblock.png");
         // Material material = new Material(texture, reflectance);
         
@@ -86,7 +88,7 @@ public class DummyGame implements IGameLogic {
         } else if(window.isKeyPressed(GLFW_KEY_M)) {
             this.pointLight.getPosition().z = lightPos - 0.1f;
         }
-    
+        
         if(window.isKeyPressed(GLFW_KEY_TAB)) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         } else {
