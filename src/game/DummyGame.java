@@ -9,6 +9,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 
 public class DummyGame implements IGameLogic {
     
@@ -39,11 +40,11 @@ public class DummyGame implements IGameLogic {
         renderer.init(window);
         
         float reflectance = 1f;
-        //Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
-        Material material = new Material(new Vector3f(0.2f, 0.5f, 0.5f), reflectance);
+         Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
+         Material material = new Material(new Vector3f(0.2f, 0.5f, 0.5f), reflectance);
         
-        Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
-        Texture texture = new Texture("/textures/grassblock.png");
+        //Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
+        // Texture texture = new Texture("/textures/grassblock.png");
         // Material material = new Material(texture, reflectance);
         
         mesh.setMaterial(material);
@@ -54,7 +55,7 @@ public class DummyGame implements IGameLogic {
         
         ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
-        Vector3f lightPosition = new Vector3f(0, 0, 1);
+        Vector3f lightPosition = new Vector3f(0, 0, -1);
         float lightIntensity = 1.0f;
         pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
         PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
@@ -84,6 +85,12 @@ public class DummyGame implements IGameLogic {
             this.pointLight.getPosition().z = lightPos + 0.1f;
         } else if(window.isKeyPressed(GLFW_KEY_M)) {
             this.pointLight.getPosition().z = lightPos - 0.1f;
+        }
+    
+        if(window.isKeyPressed(GLFW_KEY_TAB)) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
     
