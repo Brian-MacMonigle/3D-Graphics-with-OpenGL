@@ -8,8 +8,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="joml-1.9.9" level="project" />
-    <orderEntry type="library" exported="" name="lwjgl" level="project" />
     <orderEntry type="library" name="pngdecoder-1.0-javadoc" level="project" />
+    <orderEntry type="library" name="joml-1.9" level="project" />
+    <orderEntry type="library" name="pngdecoder-1" level="project" />
+    <orderEntry type="library" name="lwjgl" level="project" />
   </component>
 </module>
