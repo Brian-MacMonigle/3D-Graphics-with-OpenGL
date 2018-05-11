@@ -28,12 +28,17 @@ public class DummyGame implements IGameLogic {
     
     private PointLight pointLight;
     
+    private DirectionalLight directionalLight;
+    
+    private float lightAngle;
+    
     private static final float CAMERA_POS_STEP = 0.05f;
     
     public DummyGame() {
         renderer = new Renderer();
         camera = new Camera();
         cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
+        lightAngle = -90;
     }
     
     @Override
@@ -41,27 +46,34 @@ public class DummyGame implements IGameLogic {
         renderer.init(window);
         
         float reflectance = 1f;
-        //Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
-        Material material = new Material(new Vector4f(1.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 1.0f, 0.0f),
-                                         new Vector4f(0.0f, 1.0f, 0.0f, 0.0f), null, reflectance);
+        Mesh mesh = OBJLoader.loadMesh("/models/bunny.obj");
+        Material material = new Material(new Vector3f(0.2f, 0.5f, 0.5f), reflectance);
         
-        Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
-        // Texture texture = new Texture("/textures/grassblock.png");
-        // Material material = new Material(texture, reflectance);
+        //Mesh mesh = OBJLoader.loadMesh("/models/cube.obj");
+        //Texture texture = new Texture("/textures/grassblock.png");
+        //Material material = new Material(texture, reflectance);
         
         mesh.setMaterial(material);
         GameItem gameItem = new GameItem(mesh);
         gameItem.setScale(0.5f);
         gameItem.setPosition(0, 0, -2);
+        //gameItem.setPosition(0, 0, -2);
+        //gameItem.setScale(0.1f);
+        //gameItem.setPosition(0, 0, -2);
+        //gameItem.setPosition(0, 0, -0.2f);
         gameItems = new GameItem[] {gameItem};
         
         ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
-        Vector3f lightPosition = new Vector3f(0, 0, -1);
+        Vector3f lightPosition = new Vector3f(0, 0, 1);
         float lightIntensity = 1.0f;
         pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
         PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
         pointLight.setAttenuation(att);
+        
+        lightPosition = new Vector3f(-1, 0, 0);
+        lightColour = new Vector3f(1, 1, 1);
+        directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
     }
     
     @Override
@@ -88,12 +100,6 @@ public class DummyGame implements IGameLogic {
         } else if(window.isKeyPressed(GLFW_KEY_M)) {
             this.pointLight.getPosition().z = lightPos - 0.1f;
         }
-        
-        if(window.isKeyPressed(GLFW_KEY_TAB)) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        } else {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
     }
     
     @Override
@@ -107,11 +113,33 @@ public class DummyGame implements IGameLogic {
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
+        
+        // Update directional light direction, intensity and colour
+        lightAngle += 0.2f;
+        if(lightAngle > 90) {
+            directionalLight.setIntensity(0);
+            if(lightAngle >= 270) {
+                lightAngle = -90;
+            }
+        } else if(lightAngle <= -80 || lightAngle >= 80) {
+            float factor = 1 - (float) (Math.abs(lightAngle) - 80) / 10.0f;
+            directionalLight.setIntensity(factor);
+            directionalLight.getColor().y = Math.max(factor, 0.9f);
+            directionalLight.getColor().z = Math.max(factor, 0.5f);
+        } else {
+            directionalLight.setIntensity(1);
+            directionalLight.getColor().x = 1;
+            directionalLight.getColor().y = 1;
+            directionalLight.getColor().z = 1;
+        }
+        double angRad = Math.toRadians(lightAngle);
+        directionalLight.getDirection().x = (float) Math.sin(angRad);
+        directionalLight.getDirection().y = (float) Math.cos(angRad);
     }
     
     @Override
     public void render(Window window) {
-        renderer.render(window, camera, gameItems, ambientLight, pointLight);
+        renderer.render(window, camera, gameItems, ambientLight, pointLight, directionalLight);
     }
     
     @Override
