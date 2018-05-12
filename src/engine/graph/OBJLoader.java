@@ -4,22 +4,24 @@ import engine.Utils;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OBJLoader {
     
     public static Mesh loadMesh(String fileName) throws Exception {
-        List<String> lines = Utils.readAllLines(fileName);
+        List<String> lines = Files.readAllLines(Paths.get(OBJLoader.class.getResource(fileName).toURI()));
         
         List<Vector3f> vertices = new ArrayList<>();
         List<Vector2f> textures = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
         List<Face> faces = new ArrayList<>();
         
-        for (String line : lines) {
+        for(String line : lines) {
             String[] tokens = line.split("\\s+");
-            switch (tokens[0]) {
+            switch(tokens[0]) {
                 case "v":
                     // Geometric vertex
                     Vector3f vec3f = new Vector3f(
@@ -62,7 +64,7 @@ public class OBJLoader {
         // Create position array in the order it has been declared
         float[] posArr = new float[posList.size() * 3];
         int i = 0;
-        for (Vector3f pos : posList) {
+        for(Vector3f pos : posList) {
             posArr[i * 3] = pos.x;
             posArr[i * 3 + 1] = pos.y;
             posArr[i * 3 + 2] = pos.z;
@@ -71,9 +73,9 @@ public class OBJLoader {
         float[] textCoordArr = new float[posList.size() * 2];
         float[] normArr = new float[posList.size() * 3];
         
-        for (Face face : facesList) {
+        for(Face face : facesList) {
             IdxGroup[] faceVertexIndices = face.getFaceVertexIndices();
-            for (IdxGroup indValue : faceVertexIndices) {
+            for(IdxGroup indValue : faceVertexIndices) {
                 processFaceVertex(indValue, textCoordList, normList,
                                   indices, textCoordArr, normArr);
             }
@@ -93,12 +95,12 @@ public class OBJLoader {
         indicesList.add(posIndex);
         
         // Reorder texture coordinates
-        if (indices.idxTextCoord >= 0) {
+        if(indices.idxTextCoord >= 0) {
             Vector2f textCoord = textCoordList.get(indices.idxTextCoord);
             texCoordArr[posIndex * 2] = textCoord.x;
             texCoordArr[posIndex * 2 + 1] = 1 - textCoord.y;
         }
-        if (indices.idxVecNormal >= 0) {
+        if(indices.idxVecNormal >= 0) {
             // Reorder vectornormals
             Vector3f vecNorm = normList.get(indices.idxVecNormal);
             normArr[posIndex * 3] = vecNorm.x;
@@ -128,11 +130,11 @@ public class OBJLoader {
             String[] lineTokens = line.split("/");
             int length = lineTokens.length;
             idxGroup.idxPos = Integer.parseInt(lineTokens[0]) - 1;
-            if (length > 1) {
+            if(length > 1) {
                 // It can be empty if the obj does not define text coords
                 String textCoord = lineTokens[1];
                 idxGroup.idxTextCoord = textCoord.length() > 0 ? Integer.parseInt(textCoord) - 1 : IdxGroup.NO_VALUE;
-                if (length > 2) {
+                if(length > 2) {
                     idxGroup.idxVecNormal = Integer.parseInt(lineTokens[2]) - 1;
                 }
             }

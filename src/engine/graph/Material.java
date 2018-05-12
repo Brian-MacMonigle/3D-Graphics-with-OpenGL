@@ -25,10 +25,6 @@ public class Material {
         this.reflectance = 0;
     }
     
-    public Material (Vector3f colour, float reflectance) {
-        this(new Vector4f(colour, 1), reflectance);
-    }
-    
     public Material(Vector4f colour, float reflectance) {
         this(colour, colour, colour, null, reflectance);
     }
@@ -41,7 +37,8 @@ public class Material {
         this(DEFAULT_COLOUR, DEFAULT_COLOUR, DEFAULT_COLOUR, texture, reflectance);
     }
     
-    public Material(Vector4f ambientColour, Vector4f diffuseColour, Vector4f specularColour, Texture texture, float reflectance) {
+    public Material(Vector4f ambientColour, Vector4f diffuseColour, Vector4f specularColour, Texture texture,
+                    float reflectance) {
         this.ambientColour = ambientColour;
         this.diffuseColour = diffuseColour;
         this.specularColour = specularColour;
@@ -92,5 +89,4 @@ public class Material {
     public void setTexture(Texture texture) {
         this.texture = texture;
     }
-    
 }
