@@ -37,6 +37,12 @@ public class ShaderProgram {
         uniforms.put(uniformName, uniformLocation);
     }
     
+    public void createPointLightListUniform(String uniformName, int size) throws Exception {
+        for(int i = 0; i < size; i++) {
+            createPointLightUniform(uniformName + "[" + i + "]");
+        }
+    }
+    
     public void createPointLightUniform(String uniformName) throws Exception {
         createUniform(uniformName + ".colour");
         createUniform(uniformName + ".position");
@@ -44,6 +50,18 @@ public class ShaderProgram {
         createUniform(uniformName + ".att.constant");
         createUniform(uniformName + ".att.linear");
         createUniform(uniformName + ".att.exponent");
+    }
+    
+    public void createSpotLightListUniform(String uniformName, int size) throws Exception {
+        for(int i = 0; i < size; i++) {
+            createSpotLightUniform(uniformName + "[" + i + "]");
+        }
+    }
+    
+    public void createSpotLightUniform(String uniformName) throws Exception {
+        createPointLightUniform(uniformName + ".pl");
+        createUniform(uniformName + ".conedir");
+        createUniform(uniformName + ".cutoff");
     }
     
     public void createDirectionalLightUniform(String uniformName) throws Exception {
@@ -85,6 +103,17 @@ public class ShaderProgram {
         glUniform4f(uniforms.get(uniformName), value.x, value.y, value.z, value.w);
     }
     
+    public void setUniform(String uniformName, PointLight[] pointLights) {
+        int numLights = pointLights != null ? pointLights.length : 0;
+        for(int i = 0; i < numLights; i++) {
+            setUniform(uniformName, pointLights[i], i);
+        }
+    }
+    
+    public void setUniform(String uniformName, PointLight pointLight, int pos) {
+        setUniform(uniformName + "[" + pos + "]", pointLight);
+    }
+    
     public void setUniform(String uniformName, PointLight pointLight) {
         setUniform(uniformName + ".colour", pointLight.getColor());
         setUniform(uniformName + ".position", pointLight.getPosition());
@@ -93,6 +122,23 @@ public class ShaderProgram {
         setUniform(uniformName + ".att.constant", att.getConstant());
         setUniform(uniformName + ".att.linear", att.getLinear());
         setUniform(uniformName + ".att.exponent", att.getExponent());
+    }
+    
+    public void setUniform(String uniformName, SpotLight[] spotLights) {
+        int numLights = spotLights != null ? spotLights.length : 0;
+        for(int i = 0; i < numLights; i++) {
+            setUniform(uniformName, spotLights[i], i);
+        }
+    }
+    
+    public void setUniform(String uniformName, SpotLight spotLight, int pos) {
+        setUniform(uniformName + "[" + pos + "]", spotLight);
+    }
+    
+    public void setUniform(String uniformName, SpotLight spotLight) {
+        setUniform(uniformName + ".pl", spotLight.getPointLight());
+        setUniform(uniformName + ".conedir", spotLight.getConeDirection());
+        setUniform(uniformName + ".cutoff", spotLight.getCutOff());
     }
     
     public void setUniform(String uniformName, DirectionalLight dirLight) {
