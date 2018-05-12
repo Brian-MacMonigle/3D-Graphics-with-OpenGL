@@ -94,7 +94,9 @@ public class DummyGame implements IGameLogic {
         SpotLight spotLight2 = new SpotLight(spotLight);
         spotLight2.setCutOff(spotRange);
         spotLight2.getPointLight().getPosition().z = 1f;
-        spotLight2.getPointLight().getAttenuation().setExponent(0.05f);
+        spotLight2.getPointLight().getAttenuation().setExponent(0.00f);
+        spotLight2.getConeDirection().z = 0;
+        spotLight2.getConeDirection().x = 1;
         spotLightList = new SpotLight[] {spotLight, spotLight2};
         
         lightPosition = new Vector3f(-1, 0, 0);
@@ -158,7 +160,7 @@ public class DummyGame implements IGameLogic {
         
         // Update spot light cutoff angle
         spotRange += spotRangeInc * 0.5f;
-        if(spotRange > 90) {
+        if(spotRange > 360) {
             spotRangeInc = -1;
         } else if(spotRange < 0) {
             spotRangeInc = 1;
