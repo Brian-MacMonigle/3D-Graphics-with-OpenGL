@@ -101,7 +101,7 @@ public class Window {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
         // Only render front face of triangles
-        // glEnable(GL_CULL_FACE); TODO: STOPS DRAWING COMPASS
+        glEnable(GL_CULL_FACE); // TODO: STOPS DRAWING COMPASS
     }
     
     public long getWindowHandle() {
