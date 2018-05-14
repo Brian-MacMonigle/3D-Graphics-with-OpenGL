@@ -60,6 +60,7 @@ public class GameEngine implements Runnable {
         boolean running = true;
         while(running && !window.windowShouldClose()) {
             elapsedTime = timer.getElapsedTime();
+            System.out.println("Elapsed Time: " + (elapsedTime * 100) + "ms");
             accumulator += elapsedTime;
             
             input();
@@ -67,6 +68,9 @@ public class GameEngine implements Runnable {
             while(accumulator >= interval) {
                 update(interval);
                 accumulator -= interval;
+                if(accumulator >= interval) {
+                    System.out.println("Lost a update due to rendering");
+                }
             }
             
             render();
