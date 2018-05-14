@@ -1,8 +1,8 @@
 package game;
 
-import engine.GameItem;
+import engine.items.GameItem;
 import engine.IHud;
-import engine.TextItem;
+import engine.items.TextItem;
 import engine.Window;
 import engine.graph.FontTexture;
 import engine.graph.Material;

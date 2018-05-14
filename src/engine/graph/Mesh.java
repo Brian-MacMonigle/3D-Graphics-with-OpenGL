@@ -1,7 +1,6 @@
 package engine.graph;
 
-import engine.GameItem;
-import org.joml.Vector3f;
+import engine.items.GameItem;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;

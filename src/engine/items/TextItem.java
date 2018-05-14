@@ -1,5 +1,6 @@
-package engine;
+package engine.items;
 
+import engine.Utils;
 import engine.graph.FontTexture;
 import engine.graph.Material;
 import engine.graph.Mesh;
