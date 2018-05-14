@@ -24,6 +24,8 @@ public class Hud implements IHud {
     
     private final GameItem compassItem;
     
+    private final FramesPerSecond fps;
+    
     public Hud(String statusText) throws Exception {
         FontTexture fontTexture = new FontTexture(FONT, CHARSET);
         this.statusTextItem = new TextItem(statusText, fontTexture);
@@ -39,8 +41,11 @@ public class Hud implements IHud {
         // Rotate to transform it to screen coordinates
         rotateCompass(0);
         
+        // Create Frames Per Second
+        fps = new FramesPerSecond(fontTexture);
+        
         // Create list that holds the items that compose the HUD
-        gameItems = new GameItem[] {statusTextItem, compassItem};
+        gameItems = new GameItem[] {statusTextItem, compassItem, fps};
     }
     
     public void setStatusText(String statusText) {
@@ -59,5 +64,7 @@ public class Hud implements IHud {
     public void updateSize(Window window) {
         this.statusTextItem.setPosition(10f, window.getHeight() - 50f, 0);
         this.compassItem.setPosition(window.getWidth() - 40f, 50f, 0);
+        this.fps.setPosition(10f, 10f, 0);
+        this.fps.update();
     }
 }

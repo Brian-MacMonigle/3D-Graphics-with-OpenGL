@@ -49,13 +49,13 @@ public class DummyGame implements IGameLogic {
         scene = new Scene();
         
         float skyBoxScale = 50.0f;
-        float terrainScale = 10;
+        float terrainScale = 5f;
         int terrainSize = 1;
-        float minY = -0.01f;
-        float maxY = 0.01f;
-        int textInc = 40;
-        Terrain terrain = new Terrain(terrainSize, terrainScale, minY, maxY, "/textures/heightmap.png",
-                                      "/textures/terrain.png", textInc);
+        float minY = -0.1f;
+        float maxY = 0.1f;
+        int textInc = 1;
+        Terrain terrain = new Terrain(terrainSize, terrainScale, minY, maxY, "/textures/grassblock.png",
+                                      "/textures/grassblock.png", textInc);
         scene.setGameItems(terrain.getGameItems());
         
         // Setup  SkyBox
@@ -106,6 +106,11 @@ public class DummyGame implements IGameLogic {
             cameraInc.y = -1;
         } else if(window.isKeyPressed(GLFW_KEY_X)) {
             cameraInc.y = 1;
+        }
+        if(window.isKeyPressed(GLFW_KEY_LEFT_SHIFT) || window.isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
+            cameraInc.x *= 10;
+            cameraInc.y *= 10;
+            cameraInc.z *= 10;
         }
         
         if(window.isKeyPressed(GLFW_KEY_TAB)) {
