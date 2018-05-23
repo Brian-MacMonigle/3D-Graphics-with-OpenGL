@@ -34,6 +34,10 @@ public class DummyGame implements IGameLogic {
     
     private Terrain terrain;
     
+    private float quadAngle;
+    
+    private GameItem[] quads;
+    
     private boolean polygonMode = false;
     
     public DummyGame() {
@@ -41,6 +45,7 @@ public class DummyGame implements IGameLogic {
         camera = new Camera();
         cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);
         lightAngle = -90;
+        quadAngle = 45;
     }
     
     @Override
@@ -87,8 +92,9 @@ public class DummyGame implements IGameLogic {
         item1.getMesh().setMaterial(noNormal);
         item1.setPosition(-3f, 2f, -1f);
         item1.setScale(2.0f);
-        item1.setRotation(90, 0, 0);
+        item1.setRotation(45, 0, 45);
         
+        // texture = new Texture("/textures/rock_normals.png");
         Material normal = new Material(texture, reflectance);
         normal.setNormalMap(normalMap);
         GameItem item2 = new GameItem(OBJLoader.loadMesh("/models/quad.obj"));
@@ -97,7 +103,9 @@ public class DummyGame implements IGameLogic {
         item2.setScale(2.0f);
         item2.setRotation(90, 0, 0);
         
-        scene.setGameItems(new GameItem[] {item1, item2});
+        quads = new GameItem[] {item1, item2};
+        
+        scene.setGameItems(quads);
     }
     
     private void setupLights() {
@@ -140,14 +148,19 @@ public class DummyGame implements IGameLogic {
         
         if(window.isKeyPressed(GLFW_KEY_LEFT)) {
             lightAngle -= 2.5f;
-            if(lightAngle < -90) {
-                lightAngle = -90;
-            }
         } else if(window.isKeyPressed(GLFW_KEY_RIGHT)) {
             lightAngle += 2.5f;
-            if(lightAngle > 90) {
-                lightAngle = 90;
-            }
+        }
+        if(lightAngle > 180) {
+            lightAngle = -180;
+        } else if(lightAngle < -180) {
+            lightAngle = 180;
+        }
+        
+        if(window.isKeyPressed(GLFW_KEY_UP)) {
+            quadAngle += 1.0f;
+        } else if(window.isKeyPressed(GLFW_KEY_DOWN)) {
+            quadAngle -= 1.0f;
         }
         
         if(window.isKeyPressed(GLFW_KEY_TAB)) {
@@ -186,6 +199,11 @@ public class DummyGame implements IGameLogic {
         double angRad = Math.toRadians(lightAngle);
         directionalLight.getDirection().x = (float) Math.sin(angRad);
         directionalLight.getDirection().y = (float) Math.cos(angRad);
+        
+        // Update quad angle
+        for(GameItem item : quads) {
+            item.getRotation().y = quadAngle;
+        }
         
         System.out.println(lightAngle);
     }
