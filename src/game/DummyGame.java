@@ -195,7 +195,7 @@ public class DummyGame implements IGameLogic {
         
         // Update directional light direction, intensity and colour
         SceneLight sceneLight = scene.getSceneLight();
-        DirectionalLight directionalLight = sceneLight.getDirectionalLight();
+        DirectionalLight directionalLight = sceneLight.getDirectionalLight();// A comment
         double angRad = Math.toRadians(lightAngle);
         directionalLight.getDirection().x = (float) Math.sin(angRad);
         directionalLight.getDirection().y = (float) Math.cos(angRad);
