@@ -1,10 +1,10 @@
 package game;
 
 import engine.*;
-import engine.graph.Camera;
-import engine.graph.Renderer;
+import engine.graph.*;
 import engine.graph.lights.DirectionalLight;
 import engine.graph.weather.Fog;
+import engine.items.GameItem;
 import engine.items.SkyBox;
 import engine.items.Terrain;
 import org.joml.Vector2f;
@@ -66,7 +66,7 @@ public class DummyGame implements IGameLogic {
         
         // Setup Lights
         setupLights();
-        scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.15f));
+        scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.1f));
         scene.setClearColor(new Vector4f(0.5f, 0.5f, 0.5f, 1));
         
         // Create HUD
@@ -76,6 +76,28 @@ public class DummyGame implements IGameLogic {
         camera.getPosition().z = 0.0f;
         camera.getPosition().y = -0.2f;
         camera.getRotation().x = 10.f;
+        
+        // Setup floading quads for Normal Map demo
+        float reflectance = 0.65f;
+        Texture texture = new Texture("/textures/rock.png");
+        Texture normalMap = new Texture("/textures/rock_normals.png");
+        
+        Material noNormal = new Material(texture, reflectance);
+        GameItem item1 = new GameItem(OBJLoader.loadMesh("/models/quad.obj"));
+        item1.getMesh().setMaterial(noNormal);
+        item1.setPosition(-3f, 2f, -1f);
+        item1.setScale(2.0f);
+        item1.setRotation(90, 0, 0);
+        
+        Material normal = new Material(texture, reflectance);
+        normal.setNormalMap(normalMap);
+        GameItem item2 = new GameItem(OBJLoader.loadMesh("/models/quad.obj"));
+        item2.getMesh().setMaterial(normal);
+        item2.setPosition(3f, 2f, -1f);
+        item2.setScale(2.0f);
+        item2.setRotation(90, 0, 0);
+        
+        scene.setGameItems(new GameItem[] {item1, item2});
     }
     
     private void setupLights() {
@@ -116,6 +138,18 @@ public class DummyGame implements IGameLogic {
             cameraInc.z *= 10;
         }
         
+        if(window.isKeyPressed(GLFW_KEY_LEFT)) {
+            lightAngle -= 2.5f;
+            if(lightAngle < -90) {
+                lightAngle = -90;
+            }
+        } else if(window.isKeyPressed(GLFW_KEY_RIGHT)) {
+            lightAngle += 2.5f;
+            if(lightAngle > 90) {
+                lightAngle = 90;
+            }
+        }
+        
         if(window.isKeyPressed(GLFW_KEY_TAB)) {
             polygonMode = true;
         } else {
@@ -145,39 +179,23 @@ public class DummyGame implements IGameLogic {
             //camera.setPosition(prevPos.x, prevPos.y, prevPos.z);
             camera.getPosition().y = height;
         }
-    
+        
         // Update directional light direction, intensity and colour
         SceneLight sceneLight = scene.getSceneLight();
         DirectionalLight directionalLight = sceneLight.getDirectionalLight();
-        lightAngle += 1f;
-        if (lightAngle > 90) {
-            directionalLight.setIntensity(0);
-            if (lightAngle >= 100) {
-                lightAngle = -90;
-            }
-            sceneLight.getSkyBoxLight().set(0.3f, 0.3f, 0.3f);
-        } else if (lightAngle <= -80 || lightAngle >= 80) {
-            float factor = 1 - (float) (Math.abs(lightAngle) - 80) / 10.0f;
-            sceneLight.getSkyBoxLight().set(factor, factor, factor);
-            directionalLight.setIntensity(factor);
-            directionalLight.getColor().y = Math.max(factor, 0.9f);
-            directionalLight.getColor().z = Math.max(factor, 0.5f);
-        } else {
-            sceneLight.getSkyBoxLight().set(1.0f, 1.0f, 1.0f);
-            directionalLight.setIntensity(1);
-            directionalLight.getColor().x = 1;
-            directionalLight.getColor().y = 1;
-            directionalLight.getColor().z = 1;
-        }
         double angRad = Math.toRadians(lightAngle);
         directionalLight.getDirection().x = (float) Math.sin(angRad);
         directionalLight.getDirection().y = (float) Math.cos(angRad);
+        
+        System.out.println(lightAngle);
     }
     
     @Override
     public void render(Window window) {
         glPolygonMode(GL_FRONT_AND_BACK, (polygonMode) ? GL_LINE : GL_FILL);
-        hud.updateSize(window);
+        if(hud != null) {
+            hud.updateSize(window);
+        }
         renderer.render(window, camera, scene, hud);
     }
     

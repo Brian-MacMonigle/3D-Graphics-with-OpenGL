@@ -75,16 +75,16 @@ public class Mesh {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         } finally {
-            if(posBuffer != null) {
+            if (posBuffer != null) {
                 MemoryUtil.memFree(posBuffer);
             }
-            if(textCoordsBuffer != null) {
+            if (textCoordsBuffer != null) {
                 MemoryUtil.memFree(textCoordsBuffer);
             }
-            if(vecNormalsBuffer != null) {
+            if (vecNormalsBuffer != null) {
                 MemoryUtil.memFree(vecNormalsBuffer);
             }
-            if(indicesBuffer != null) {
+            if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
             }
         }
@@ -108,11 +108,18 @@ public class Mesh {
     
     private void initRender() {
         Texture texture = material.getTexture();
-        if(texture != null) {
-            // Activate firs texture bank
+        if (texture != null) {
+            // Activate first texture bank
             glActiveTexture(GL_TEXTURE0);
             // Bind the texture
             glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
+        Texture normalMap = material.getNormalMap();
+        if ( normalMap != null ) {
+            // Activate first texture bank
+            glActiveTexture(GL_TEXTURE1);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, normalMap.getId());
         }
         
         // Draw the mesh
@@ -143,7 +150,7 @@ public class Mesh {
     public void renderList(List<GameItem> gameItems, Consumer<GameItem> consumer) {
         initRender();
         
-        for(GameItem gameItem : gameItems) {
+        for (GameItem gameItem : gameItems) {
             // Set up data requiered by gameItem
             consumer.accept(gameItem);
             // Render this game item
@@ -158,13 +165,13 @@ public class Mesh {
         
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        for(int vboId : vboIdList) {
+        for (int vboId : vboIdList) {
             glDeleteBuffers(vboId);
         }
         
         // Delete the texture
         Texture texture = material.getTexture();
-        if(texture != null) {
+        if (texture != null) {
             texture.cleanup();
         }
         
@@ -178,7 +185,7 @@ public class Mesh {
         
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        for(int vboId : vboIdList) {
+        for (int vboId : vboIdList) {
             glDeleteBuffers(vboId);
         }
         

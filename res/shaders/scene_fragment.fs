@@ -6,6 +6,7 @@ const int MAX_SPOT_LIGHTS = 5;
 in vec2 outTexCoord;
 in vec3 mvVertexNormal;
 in vec3 mvVertexPos;
+in mat4 outModelViewMatrix;
 
 out vec4 fragColor;
 
@@ -45,6 +46,7 @@ struct Material
     vec4 diffuse;
     vec4 specular;
     int hasTexture;
+    int hasNormalMap;
     float reflectance;
 };
 
@@ -56,6 +58,7 @@ struct Fog
 };
 
 uniform sampler2D texture_sampler;
+uniform sampler2D normalMap;
 uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
@@ -142,26 +145,39 @@ vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 vec4 calcFog(vec3 pos, vec4 colour, Fog fog, vec3 ambientLight, DirectionalLight dirLight)
 {
     vec3 fogColor = fog.colour * (ambientLight + dirLight.colour * dirLight.intensity);
-
     float distance = length(pos);
-    float fogFactor = 1.0 / exp((distance * fog.density) * (distance * fog.density));
-    fogFactor = clamp(fogFactor, 0.0, 1.0);
+    float fogFactor = 1.0 / exp( (distance * fog.density)* (distance * fog.density));
+    fogFactor = clamp( fogFactor, 0.0, 1.0 );
 
     vec3 resultColour = mix(fogColor, colour.xyz, fogFactor);
-    return vec4(resultColour.xyz, 1);
+    return vec4(resultColour.xyz, colour.w);
+}
+
+vec3 calcNormal(Material material, vec3 normal, vec2 text_coord, mat4 modelViewMatrix)
+{
+    vec3 newNormal = normal;
+    if ( material.hasNormalMap == 1 )
+    {
+        newNormal = texture(normalMap, text_coord).rgb;
+        newNormal = normalize(newNormal * 2 - 1);
+        newNormal = normalize(modelViewMatrix * vec4(newNormal, 0.0)).xyz;
+    }
+    return newNormal;
 }
 
 void main()
 {
     setupColours(material, outTexCoord);
 
-    vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, mvVertexPos, mvVertexNormal);
+    vec3 currNomal = calcNormal(material, mvVertexNormal, outTexCoord, outModelViewMatrix);
+
+    vec4 diffuseSpecularComp = calcDirectionalLight(directionalLight, mvVertexPos, currNomal);
 
     for (int i=0; i<MAX_POINT_LIGHTS; i++)
     {
         if ( pointLights[i].intensity > 0 )
         {
-            diffuseSpecularComp += calcPointLight(pointLights[i], mvVertexPos, mvVertexNormal);
+            diffuseSpecularComp += calcPointLight(pointLights[i], mvVertexPos, currNomal);
         }
     }
 
@@ -169,13 +185,13 @@ void main()
     {
         if ( spotLights[i].pl.intensity > 0 )
         {
-            diffuseSpecularComp += calcSpotLight(spotLights[i], mvVertexPos, mvVertexNormal);
+            diffuseSpecularComp += calcSpotLight(spotLights[i], mvVertexPos, currNomal);
         }
     }
 
-    fragColor = ambientC * vec4(ambientLight, 1) + diffuseSpecularComp;
+    fragColor = clamp(ambientC * vec4(ambientLight, 1) + diffuseSpecularComp, 0, 1);
 
-    if(fog.activeFog == 1)
+    if ( fog.activeFog == 1 )
     {
         fragColor = calcFog(mvVertexPos, fragColor, fog, ambientLight, directionalLight);
     }

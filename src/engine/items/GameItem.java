@@ -5,13 +5,13 @@ import org.joml.Vector3f;
 
 public class GameItem {
     
-    private Mesh mesh;
-    
     private final Vector3f position;
     
-    private float scale;
-    
     private final Vector3f rotation;
+    
+    private Mesh mesh;
+    
+    private float scale;
     
     public GameItem() {
         position = new Vector3f(0, 0, 0);

@@ -121,7 +121,9 @@ public class Renderer {
             renderSkyBox(window, camera, scene);
         }
         
-        renderHud(window, hud);
+        if(hud != null) {
+            renderHud(window, hud);
+        }
     }
     
     private void renderSkyBox(Window window, Camera camera, Scene scene) {

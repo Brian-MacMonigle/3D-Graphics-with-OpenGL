@@ -7,10 +7,7 @@ import engine.items.SkyBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Scene {
     
@@ -27,7 +24,7 @@ public class Scene {
     public Scene() {
         meshMap = new HashMap();
         fog = Fog.NOFOG;
-        clearColor = new Vector4f(0, 0, 0, 0);
+        clearColor = new Vector4f(0,0,0,0);
     }
     
     public Map<Mesh, List<GameItem>> getGameMeshes() {
@@ -36,11 +33,11 @@ public class Scene {
     
     public void setGameItems(GameItem[] gameItems) {
         int numGameItems = gameItems != null ? gameItems.length : 0;
-        for(int i = 0; i < numGameItems; i++) {
+        for (int i=0; i<numGameItems; i++) {
             GameItem gameItem = gameItems[i];
             Mesh mesh = gameItem.getMesh();
             List<GameItem> list = meshMap.get(mesh);
-            if(list == null) {
+            if ( list == null ) {
                 list = new ArrayList<>();
                 meshMap.put(mesh, list);
             }
@@ -49,7 +46,7 @@ public class Scene {
     }
     
     public void cleanup() {
-        for(Mesh mesh : meshMap.keySet()) {
+        for (Mesh mesh : meshMap.keySet()) {
             mesh.cleanUp();
         }
     }
@@ -70,10 +67,16 @@ public class Scene {
         this.sceneLight = sceneLight;
     }
     
+    /**
+     * @return the fog
+     */
     public Fog getFog() {
         return fog;
     }
     
+    /**
+     * @param fog the fog to set
+     */
     public void setFog(Fog fog) {
         this.fog = fog;
     }
