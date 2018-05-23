@@ -32,13 +32,13 @@ public class Renderer {
     
     private final Transformation transformation;
     
+    private final float specularPower;
+    
     private ShaderProgram sceneShaderProgram;
     
     private ShaderProgram hudShaderProgram;
     
     private ShaderProgram skyBoxShaderProgram;
-    
-    private final float specularPower;
     
     public Renderer() {
         transformation = new Transformation();
@@ -83,6 +83,7 @@ public class Renderer {
         sceneShaderProgram.createPointLightListUniform("pointLights", MAX_POINT_LIGHTS);
         sceneShaderProgram.createSpotLightListUniform("spotLights", MAX_SPOT_LIGHTS);
         sceneShaderProgram.createDirectionalLightUniform("directionalLight");
+        sceneShaderProgram.createFogUniform("fog");
     }
     
     private void setupHudShader() throws Exception {
@@ -97,12 +98,13 @@ public class Renderer {
         hudShaderProgram.createUniform("hasTexture");
     }
     
-    public void clear() {
+    public void clear(Vector4f clearColor) {
+        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     
     public void render(Window window, Camera camera, Scene scene, IHud hud) {
-        clear();
+        clear(scene.getClearColor());
         
         if(window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
@@ -115,7 +117,9 @@ public class Renderer {
         
         renderScene(window, camera, scene);
         
-        renderSkyBox(window, camera, scene);
+        if(scene.getSkyBox() != null) {
+            renderSkyBox(window, camera, scene);
+        }
         
         renderHud(window, hud);
     }
@@ -150,6 +154,8 @@ public class Renderer {
         sceneShaderProgram.setUniform("projectionMatrix", projectionMatrix);
         
         Matrix4f viewMatrix = transformation.getViewMatrix();
+        
+        sceneShaderProgram.setUniform("fog", scene.getFog());
         
         SceneLight sceneLight = scene.getSceneLight();
         renderLights(viewMatrix, sceneLight);

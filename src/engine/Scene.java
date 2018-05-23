@@ -1,8 +1,11 @@
 package engine;
 
 import engine.graph.Mesh;
+import engine.graph.weather.Fog;
 import engine.items.GameItem;
 import engine.items.SkyBox;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +20,14 @@ public class Scene {
     
     private SceneLight sceneLight;
     
+    private Fog fog;
+    
+    private Vector4f clearColor;
+    
     public Scene() {
         meshMap = new HashMap();
+        fog = Fog.NOFOG;
+        clearColor = new Vector4f(0, 0, 0, 0);
     }
     
     public Map<Mesh, List<GameItem>> getGameMeshes() {
@@ -59,5 +68,21 @@ public class Scene {
     
     public void setSceneLight(SceneLight sceneLight) {
         this.sceneLight = sceneLight;
+    }
+    
+    public Fog getFog() {
+        return fog;
+    }
+    
+    public void setFog(Fog fog) {
+        this.fog = fog;
+    }
+    
+    public Vector4f getClearColor() {
+        return clearColor;
+    }
+    
+    public void setClearColor(Vector4f clearColor) {
+        this.clearColor = clearColor;
     }
 }

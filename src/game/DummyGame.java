@@ -1,16 +1,15 @@
 package game;
 
 import engine.*;
-import engine.graph.*;
+import engine.graph.Camera;
+import engine.graph.Renderer;
 import engine.graph.lights.DirectionalLight;
-import engine.items.GameItem;
+import engine.graph.weather.Fog;
 import engine.items.SkyBox;
 import engine.items.Terrain;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-
-import java.util.List;
-import java.util.Map;
+import org.joml.Vector4f;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -18,6 +17,8 @@ import static org.lwjgl.opengl.GL11.*;
 public class DummyGame implements IGameLogic {
     
     private static final float MOUSE_SENSITIVITY = 0.2f;
+    
+    private static final float CAMERA_POS_STEP = 0.05f;
     
     private final Vector3f cameraInc;
     
@@ -30,8 +31,6 @@ public class DummyGame implements IGameLogic {
     private Hud hud;
     
     private float lightAngle;
-    
-    private static final float CAMERA_POS_STEP = 0.05f;
     
     private Terrain terrain;
     
@@ -51,22 +50,24 @@ public class DummyGame implements IGameLogic {
         scene = new Scene();
         
         float skyBoxScale = 100.0f;
-        float terrainScale = 50f;
-        int terrainSize = 1;
+        float terrainScale = 10;
+        int terrainSize = 3;
         float minY = -0.1f;
         float maxY = 0.1f;
-        int textInc = 50;
-        terrain = new Terrain(terrainSize, terrainScale, minY, maxY, "/textures/grassblock.png",
-                                      "/textures/grassblock.png", textInc);
+        int textInc = 40;
+        terrain = new Terrain(terrainSize, terrainScale, minY, maxY, "/textures/heightmap.png",
+                              "/textures/terrain.png", textInc);
         scene.setGameItems(terrain.getGameItems());
         
         // Setup  SkyBox
         SkyBox skyBox = new SkyBox("/models/skybox.obj", "/textures/skybox.png");
         skyBox.setScale(skyBoxScale);
-        scene.setSkyBox(skyBox);
+        // scene.setSkyBox(skyBox);
         
         // Setup Lights
         setupLights();
+        scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.15f));
+        scene.setClearColor(new Vector4f(0.5f, 0.5f, 0.5f, 1));
         
         // Create HUD
         hud = new Hud("DEMO");
@@ -140,10 +141,37 @@ public class DummyGame implements IGameLogic {
         // Check if there has been a collision. If true, set the y position to
         // the maximum height
         float height = terrain.getHeight(camera.getPosition()) + 0.075f;
-        if ( camera.getPosition().y <= height )  {
+        if(camera.getPosition().y <= height) {
             //camera.setPosition(prevPos.x, prevPos.y, prevPos.z);
             camera.getPosition().y = height;
         }
+    
+        // Update directional light direction, intensity and colour
+        SceneLight sceneLight = scene.getSceneLight();
+        DirectionalLight directionalLight = sceneLight.getDirectionalLight();
+        lightAngle += 1f;
+        if (lightAngle > 90) {
+            directionalLight.setIntensity(0);
+            if (lightAngle >= 100) {
+                lightAngle = -90;
+            }
+            sceneLight.getSkyBoxLight().set(0.3f, 0.3f, 0.3f);
+        } else if (lightAngle <= -80 || lightAngle >= 80) {
+            float factor = 1 - (float) (Math.abs(lightAngle) - 80) / 10.0f;
+            sceneLight.getSkyBoxLight().set(factor, factor, factor);
+            directionalLight.setIntensity(factor);
+            directionalLight.getColor().y = Math.max(factor, 0.9f);
+            directionalLight.getColor().z = Math.max(factor, 0.5f);
+        } else {
+            sceneLight.getSkyBoxLight().set(1.0f, 1.0f, 1.0f);
+            directionalLight.setIntensity(1);
+            directionalLight.getColor().x = 1;
+            directionalLight.getColor().y = 1;
+            directionalLight.getColor().z = 1;
+        }
+        double angRad = Math.toRadians(lightAngle);
+        directionalLight.getDirection().x = (float) Math.sin(angRad);
+        directionalLight.getDirection().y = (float) Math.cos(angRad);
     }
     
     @Override
@@ -155,8 +183,12 @@ public class DummyGame implements IGameLogic {
     
     @Override
     public void cleanup() {
-        renderer.cleanup();
-        scene.cleanup();
+        if(renderer != null) {
+            renderer.cleanup();
+        }
+        if(scene != null) {
+            scene.cleanup();
+        }
         if(hud != null) {
             hud.cleanup();
         }

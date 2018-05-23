@@ -3,6 +3,7 @@ package engine.graph;
 import engine.graph.lights.DirectionalLight;
 import engine.graph.lights.PointLight;
 import engine.graph.lights.SpotLight;
+import engine.graph.weather.Fog;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -18,11 +19,11 @@ public class ShaderProgram {
     
     private final int programId;
     
+    private final Map<String, Integer> uniforms;
+    
     private int vertexShaderId;
     
     private int fragmentShaderId;
-    
-    private final Map<String, Integer> uniforms;
     
     public ShaderProgram() throws Exception {
         programId = glCreateProgram();
@@ -79,6 +80,12 @@ public class ShaderProgram {
         createUniform(uniformName + ".specular");
         createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
+    }
+    
+    public void createFogUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".activeFog");
+        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".density");
     }
     
     public void setUniform(String uniformName, Matrix4f value) {
@@ -156,6 +163,12 @@ public class ShaderProgram {
         setUniform(uniformName + ".specular", material.getSpecularColour());
         setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
         setUniform(uniformName + ".reflectance", material.getReflectance());
+    }
+    
+    public void setUniform(String uniformName, Fog fog) {
+        setUniform(uniformName + ".activeFog", fog.isActive() ? 1 : 0);
+        setUniform(uniformName + ".colour", fog.getColour());
+        setUniform(uniformName + ".density", fog.getDensity());
     }
     
     public void createVertexShader(String shaderCode) throws Exception {
