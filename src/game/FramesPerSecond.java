@@ -29,7 +29,6 @@ public class FramesPerSecond extends TextItem {
     public void update() {
         buff[index] = timer.getElapsedTime();
         accumulator += buff[index];
-        System.out.println("Elapsed Time: " + buff[index]);
         index = ++index % buffSize;
         
         if(accumulator >= refreshRate) {
@@ -41,7 +40,6 @@ public class FramesPerSecond extends TextItem {
             }
             avg /= buffSize;
             int fps = (int) (1 / avg + 0.5f);
-            System.out.println("Avg: " + avg + "\tfps: " + fps);
             this.setText(fps + "fps");
         }
     }

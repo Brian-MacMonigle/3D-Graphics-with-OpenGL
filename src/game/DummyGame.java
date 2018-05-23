@@ -33,7 +33,9 @@ public class DummyGame implements IGameLogic {
     
     private static final float CAMERA_POS_STEP = 0.05f;
     
-    boolean polygonMode = false;
+    private Terrain terrain;
+    
+    private boolean polygonMode = false;
     
     public DummyGame() {
         renderer = new Renderer();
@@ -48,13 +50,13 @@ public class DummyGame implements IGameLogic {
         
         scene = new Scene();
         
-        float skyBoxScale = 50.0f;
-        float terrainScale = 5f;
+        float skyBoxScale = 100.0f;
+        float terrainScale = 50f;
         int terrainSize = 1;
         float minY = -0.1f;
         float maxY = 0.1f;
-        int textInc = 1;
-        Terrain terrain = new Terrain(terrainSize, terrainScale, minY, maxY, "/textures/grassblock.png",
+        int textInc = 50;
+        terrain = new Terrain(terrainSize, terrainScale, minY, maxY, "/textures/grassblock.png",
                                       "/textures/grassblock.png", textInc);
         scene.setGameItems(terrain.getGameItems());
         
@@ -132,8 +134,16 @@ public class DummyGame implements IGameLogic {
         }
         
         // Update camera position
+        Vector3f prevPos = new Vector3f(camera.getPosition());
         camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP,
                             cameraInc.z * CAMERA_POS_STEP);
+        // Check if there has been a collision. If true, set the y position to
+        // the maximum height
+        float height = terrain.getHeight(camera.getPosition()) + 0.075f;
+        if ( camera.getPosition().y <= height )  {
+            //camera.setPosition(prevPos.x, prevPos.y, prevPos.z);
+            camera.getPosition().y = height;
+        }
     }
     
     @Override
