@@ -182,7 +182,7 @@ float calcShadow(vec4 position)
         {
             float textDepth = texture(shadowMap, projCoords.xy + vec2(row, col) * inc).r; 
             shadowFactor += projCoords.z - bias > textDepth ? 1.0 : 0.0;        
-        }    
+        }
     }
     shadowFactor /= 9.0;
 
